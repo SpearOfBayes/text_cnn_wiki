@@ -51,10 +51,10 @@ FLAGS = tf.flags.FLAGS
 # print("")
 
 def preprocess():
-    # Data Preparation
+    # 数据预处理
     # ==================================================
 
-    # Load data
+    # 加载数据
     print("Loading data...")
     x_text, y = data_helpers.load_data_and_labels(FLAGS.positive_data_file, FLAGS.negative_data_file)
 
