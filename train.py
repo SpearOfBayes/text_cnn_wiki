@@ -63,14 +63,14 @@ def preprocess():
     vocab_processor = learn.preprocessing.VocabularyProcessor(max_document_length)
     x = np.array(list(vocab_processor.fit_transform(x_text)))
 
-    # Randomly shuffle data
+    # 将数据顺序打乱
     np.random.seed(10)
     shuffle_indices = np.random.permutation(np.arange(len(y)))
     x_shuffled = x[shuffle_indices]
     y_shuffled = y[shuffle_indices]
 
-    # Split train/test set
-    # TODO: This is very crude, should use cross-validation
+    # 分离 训练集/验证集
+    # 还需要改进的是，这种分离方式非常粗糙，需要使用交叉验证
     dev_sample_index = -1 * int(FLAGS.dev_sample_percentage * float(len(y)))
     x_train, x_dev = x_shuffled[:dev_sample_index], x_shuffled[dev_sample_index:]
     y_train, y_dev = y_shuffled[:dev_sample_index], y_shuffled[dev_sample_index:]

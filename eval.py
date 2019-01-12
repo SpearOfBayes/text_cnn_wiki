@@ -9,7 +9,6 @@ import data_helpers
 from text_cnn import TextCNN
 from tensorflow.contrib import learn
 import csv
-#lasjdfklsdjflkajsdflkajsdlk;fjasdklfjasldkfjalskdfjaklsdj
 # Parameters
 # ==================================================
 
