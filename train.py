@@ -82,7 +82,7 @@ def preprocess():
     return x_train, y_train, vocab_processor, x_dev, y_dev
 
 def train(x_train, y_train, vocab_processor, x_dev, y_dev):
-    # Training
+    # 训练过程
     # ==================================================
 
     with tf.Graph().as_default():
@@ -100,13 +100,13 @@ def train(x_train, y_train, vocab_processor, x_dev, y_dev):
                 num_filters=FLAGS.num_filters,
                 l2_reg_lambda=FLAGS.l2_reg_lambda)
 
-            # Define Training procedure
+            # 定义训练的过程
             global_step = tf.Variable(0, name="global_step", trainable=False)
             optimizer = tf.train.AdamOptimizer(1e-3)
             grads_and_vars = optimizer.compute_gradients(cnn.loss)
             train_op = optimizer.apply_gradients(grads_and_vars, global_step=global_step)
 
-            # Keep track of gradient values and sparsity (optional)
+            # 追踪梯度值的变化和稀疏度（可选）
             grad_summaries = []
             for g, v in grads_and_vars:
                 if g is not None:
@@ -121,7 +121,7 @@ def train(x_train, y_train, vocab_processor, x_dev, y_dev):
             out_dir = os.path.abspath(os.path.join(os.path.curdir, "runs", timestamp))
             print("Writing to {}\n".format(out_dir))
 
-            # Summaries for loss and accuracy
+            # 对loss和精准度求和
             loss_summary = tf.summary.scalar("loss", cnn.loss)
             acc_summary = tf.summary.scalar("accuracy", cnn.accuracy)
 
@@ -145,7 +145,7 @@ def train(x_train, y_train, vocab_processor, x_dev, y_dev):
             # Write vocabulary
             vocab_processor.save(os.path.join(out_dir, "vocab"))
 
-            # Initialize all variables
+            # 初始化所有变量
             sess.run(tf.global_variables_initializer())
 
             def train_step(x_batch, y_batch):
@@ -181,10 +181,10 @@ def train(x_train, y_train, vocab_processor, x_dev, y_dev):
                 if writer:
                     writer.add_summary(summaries, step)
 
-            # Generate batches
+            # 生成训练批次
             batches = data_helpers.batch_iter(
                 list(zip(x_train, y_train)), FLAGS.batch_size, FLAGS.num_epochs)
-            # Training loop. For each batch...
+            # 对每一个批次进行训练
             for batch in batches:
                 x_batch, y_batch = zip(*batch)
                 train_step(x_batch, y_batch)
@@ -198,6 +198,7 @@ def train(x_train, y_train, vocab_processor, x_dev, y_dev):
                     print("Saved model checkpoint to {}\n".format(path))
 
 def main(argv=None):
+    # 预处理得到训练集x_train,y_train，验证集x_dev,y_dev
     x_train, y_train, vocab_processor, x_dev, y_dev = preprocess()
     train(x_train, y_train, vocab_processor, x_dev, y_dev)
 
