@@ -29,23 +29,37 @@ def load_data_and_labels(positive_data_file, negative_data_file):
     Returns split sentences and labels.
     """
     # 从文件夹中加载数据
+    # 首先讲文本文件里面的内容按行读取出来
+    # 然后做成一个list形式
+    # 接着trip去掉每一行首尾
     positive_examples = list(open(positive_data_file, "r", encoding='utf-8').readlines())
     positive_examples = [s.strip() for s in positive_examples]
     negative_examples = list(open(negative_data_file, "r", encoding='utf-8').readlines())
     negative_examples = [s.strip() for s in negative_examples]
-    # 每句话分割
+    # x_text将两种分类的数据集合并
+    # clean_str用于清除掉一些无用的字符，然后一律转化成小写
     x_text = positive_examples + negative_examples
     x_text = [clean_str(sent) for sent in x_text]
     # 创建标签
     positive_labels = [[0, 1] for _ in positive_examples]
     negative_labels = [[1, 0] for _ in negative_examples]
     y = np.concatenate([positive_labels, negative_labels], 0)
+    # y的结构是这样的：
+    # [
+    #   [0 1]
+    #   [0 1]
+    #   [0 1]
+    #   ...
+    #   [1 0]
+    #   [1 0]
+    #   [1 0]
+    # ]
     return [x_text, y]
 
 
 def batch_iter(data, batch_size, num_epochs, shuffle=True):
     """
-    Generates a batch iterator for a dataset.
+    创建一个数据集的批量迭代器
     """
     data = np.array(data)
     data_size = len(data)
