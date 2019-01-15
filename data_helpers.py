@@ -2,7 +2,6 @@ import numpy as np
 import re
 import jieba
 import jieba.analyse
-import re
 
 label_dic = {}
 

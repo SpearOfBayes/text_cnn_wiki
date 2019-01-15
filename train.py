@@ -8,9 +8,6 @@ import datetime
 import data_helpers
 from text_cnn import TextCNN
 from tensorflow.contrib import learn
-import jieba
-import jieba.analyse
-import re
 
 # ==================================================
 # 这里初始化了一系列执行train.py时的参数选项：
@@ -22,8 +19,7 @@ import re
 
 # 加载数据集的参数
 tf.flags.DEFINE_float("dev_sample_percentage", .1, "Percentage of the training data to use for validation")
-tf.flags.DEFINE_string("positive_data_file", "./data/rt-polaritydata/rt-polarity.pos", "Data source for the positive data.")
-tf.flags.DEFINE_string("negative_data_file", "./data/rt-polaritydata/rt-polarity.neg", "Data source for the negative data.")
+tf.flags.DEFINE_string("data_file", "./data/mini_train.csv", "Data source")
 
 # 模型的超参数
 # 超参数是为了与参数概念作区别所提出的概念
@@ -59,7 +55,7 @@ def preprocess():
 
     # 加载数据
     print("Loading data...")
-    x_text, y = data_helpers.load_data_and_labels(FLAGS.positive_data_file, FLAGS.negative_data_file)
+    x_text, y = data_helpers.load_data_and_labels(FLAGS.data_file)
 
     # Build vocabulary
     max_document_length = max([len(x.split(" ")) for x in x_text])
