@@ -8,6 +8,9 @@ import datetime
 import data_helpers
 from text_cnn import TextCNN
 from tensorflow.contrib import learn
+import jieba
+import jieba.analyse
+import re
 
 # ==================================================
 # 这里初始化了一系列执行train.py时的参数选项：
