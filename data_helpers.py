@@ -2,6 +2,8 @@ import numpy as np
 import re
 import jieba
 import jieba.analyse
+from encode_table import labels
+from tqdm import *
 
 label_dic = {}
 
@@ -33,15 +35,16 @@ def segmentation(word):
 	return tmp.join(l)
 
 def onehot_encode(y):
-    label_set = list(set(y))
-    for i in range(len(label_set)):
-        # label_dic是一个全局变量
-        label_dic[label_set[i]] = i
-    codes = map(lambda x: label_dic[x], y)
+    # for i in range(len(label_set)):
+    #     # label_dic是一个全局变量
+    #     label_dic[label_set[i]] = i
+    # codes = map(lambda x: label_dic[x], y)
+    codes = map(lambda x: labels[x], y)
     y_encoded = []
-    length = len(label_set) #获取标签集的长度
+    length = len(labels) #获取标签集的长度
     # 为每一个数编码
-    for code in codes:
+    print('正在对标签进行one hot编码。。。。')
+    for code in tqdm(codes):
         array = [0 for _ in range(length)]
         array[code] = 1
         y_encoded.append(array)
@@ -90,6 +93,8 @@ def load_data_and_labels(data_file):
         if not line:
             break
         item, label = line.split(',')
+        #去掉末尾的'\n'
+        label = label.strip('\n')
         # clean数据
         # item, label = clean_str(item), clean_str(label)
         # 加入数据集
@@ -99,9 +104,11 @@ def load_data_and_labels(data_file):
 
     f.close()
 
-    for i in range(len(x_text)):
+    print('正在对商品名进行分词。。。。')
+    for i in tqdm(range(len(x_text))):
         x_text[i] = segmentation(x_text[i])
     y = onehot_encode(y)
+    y = np.array(y)
 
     return [x_text, y]
 
@@ -125,6 +132,23 @@ def batch_iter(data, batch_size, num_epochs, shuffle=True):
             end_index = min((batch_num + 1) * batch_size, data_size)
             yield shuffled_data[start_index:end_index]
 
+def load_data_to_be_predicted(data_file):
+    f = open(data_file, 'r')
+    return f.read().split('\n')
+
+
+def get_label_name(index):
+    for key in labels:
+        if labels[key] == index:
+            return key
+
+    return 'not found'
+
+def get_label_name_list(label_nums):
+    label_names = []
+    for i in range(len(label_nums)):
+        label_names.append(get_label_name(int(label_nums[i])))
+    return label_names
     
 if __name__ == '__main__':
     [x_text, y] = load_data_and_labels('./data/mini_train.csv')
